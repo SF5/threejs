@@ -84,7 +84,11 @@ export default function Experience() {
                 mode={GlitchMode.CONSTANT_MILD}
             /> */}
             {datas.enabled && <Scanline density={datas.density} />}
-            {depth.enabled && <DepthOfField {...depth} />}
+             {depth.enabled && <DepthOfField
+                focusDistance={depth.focusdistance}
+                focalLength={depth.focallength}
+                bokehScale={depth.bokehscale}
+            />}
             {noise.enabled && <Noise blendFunction={noise.BlendFunction} />}
             {bloom.enabled && <Bloom mipmapBlur intensity={bloom.intensity} luminanceThreshold={0} />}
             {ssrProps.enabled && <SSR {...ssrProps} />}
