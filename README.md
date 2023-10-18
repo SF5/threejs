@@ -4,3 +4,5 @@ https://sf5.github.io/threejs/
 <br>
 earlier page with study of lights
 https://sf5.github.io/threejs/lights/
+<br>
+postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
