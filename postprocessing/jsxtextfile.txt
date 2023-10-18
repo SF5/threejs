@@ -1,42 +1,49 @@
 '#experience.jsx'
 'jsx'
 console.log('this is jsx')
-
 import { OrbitControls } from '@react-three/drei'
 import { Perf } from 'r3f-perf'
-import { SSR, EffectComposer, Glitch, Vignette, Noise, Bloom, DepthOfField } from '@react-three/postprocessing'
+import { SSR, EffectComposer, Scanline, Glitch, Vignette, Noise, Bloom, DepthOfField } from '@react-three/postprocessing'
 import { BlendFunction, GlitchMode } from 'postprocessing'
-import { folder, useControls } from 'leva'
+import { useControls } from 'leva'
 
 export default function Experience() {
 
-
-    const { blendFunction, intensity, colorsphere, colorcube,
-    } = useControls('effects',
+    const colors = useControls('colors',
         {
-            blendFunction:
-                folder({
-                    blendFunction: { value: BlendFunction.LUMINOSITY, options: BlendFunction }
-                }),
-            bloomintensity:
-                folder({
-                    intensity: { value: 0.1, min: 0, max: 3, step: 0.01 },
-                    'color': folder({
-                        colorsphere: '#d17f2c',
-                        colorcube: '#c3b0e8'
-                    })
-
-                }),
-
+            colorsphere: '#d17f2c',
+            colorcube: '#c3b0e8'
         })
+
+    const datas = useControls('Scanline', {
+        enabled: false,
+        density: { value: 1.25, min: 0, max: 10, step: 0.01 }
+    })
+    const noise = useControls('noise', {
+        enabled: false,
+        BlendFunction: { enabled: true, value: BlendFunction.LUMINOSITY, options: BlendFunction }
+    })
+    const bloom = useControls('bloomintensity', {
+        enabled: false,
+        intensity: { value: 0.1, min: 0, max: 3, step: 0.01 }
+    })
+    const dark = useControls("vignette", {
+        enabled: false,
+        offset: { value: 0.3, min: 0.0, max: 4.0, step: 0.1 },
+        darkness: { value: 0.9, min: 0.0, max: 4.0, step: 0.1 },
+        blendFunction: { enabled: true, value: BlendFunction.AVERAGE, options: BlendFunction }
+    })
+
     const depth = useControls('depth of field',
         {
+            enabled: true,
             focusdistance: { value: 0.025, min: 0.0, max: 1.0, step: 0.001 },
             focallength: { value: 0.025, min: 0.0, max: 1.0, step: 0.001 },
             bokehscale: { value: 6.0, min: 0.0, max: 10, step: 1.0 }
 
         })
     const ssrProps = useControls('SSR Effect', {
+        enabled: false,
         temporalResolve: true,
         STRETCH_MISSED_RAYS: true,
         USE_MRT: true,
@@ -64,33 +71,24 @@ export default function Experience() {
         maxDepthDifference: { value: 3, min: 0, max: 10 },
         maxDepth: { value: 1, min: 0, max: 1 },
         thickness: { value: 10, min: 0, max: 10 },
-        ior: { value: 1.45, min: 0, max: 2 }
+        ior: { value: 1.45, min: 0, max: 2 },
     })
-
 
     return <>
         <color args={['#000000']} attach="background" />
-
         <EffectComposer>
-
-            <Noise
-                premultiply
-                blendFunction={blendFunction}
-            />
-            <Vignette
-                offset={0.3}
-                darkness={0.9}
-                blendFunction={blendFunction}
-
-            />
-            <Bloom mipmapBlur
-                intensity={intensity}
-                luminanceThreshold={0}
-            />
-            <DepthOfField
-                {...depth} />
-
-            <SSR {...ssrProps} />
+{/*             <Glitch
+                delay={[0.5, 1]}
+                duration={[0.1, 0.3]}
+                strength={[0.2, 0.4]}
+                mode={GlitchMode.CONSTANT_MILD}
+            /> */}
+            {datas.enabled && <Scanline density={datas.density} />}
+            {depth.enabled && <DepthOfField {...depth} />}
+            {noise.enabled && <Noise blendFunction={noise.BlendFunction} />}
+            {bloom.enabled && <Bloom mipmapBlur intensity={bloom.intensity} luminanceThreshold={0} />}
+            {ssrProps.enabled && <SSR {...ssrProps} />}
+            {dark.enabled && <Vignette {...dark} />}
         </EffectComposer>
         <Perf position="top-left" />
         <OrbitControls makeDefault />
@@ -102,9 +100,9 @@ export default function Experience() {
             <sphereGeometry />
             <meshStandardMaterial
                 //color={'#d17f2c'}
-                color={colorsphere}
-                emissive={colorsphere}
-                emissiveIntensity={intensity}
+                color={colors.colorsphere}
+                emissive={colors.colorsphere}
+                emissiveIntensity={bloom.intensity}
                 toneMapped={false} />
         </mesh>
 
@@ -114,9 +112,9 @@ export default function Experience() {
                 //meshBasicMaterial
                 // color={([1.5, 1, 4])}  
                 //color={'#c3b0e8'}
-                color={colorcube}
-                emissive={colorcube}
-                emissiveIntensity={intensity}
+                color={colors.colorcube}
+                emissive={colors.colorcube}
+                emissiveIntensity={bloom.intensity}
                 toneMapped={false} />
         </mesh>
 
