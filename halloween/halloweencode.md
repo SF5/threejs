@@ -13,7 +13,7 @@ import * as THREE from 'three'
 
 export default function Model(props) {
   const { nodes, materials } = useGLTF('./model/halloween2.glb')
-  const bakedTexture = useTexture('./model/bake.jpg')
+  const bakedTexture = useTexture('./model/sdr.jpg')
 
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Model(props) {
           emissiveIntensity={1}
           envMapIntensity={0.5}
         >
-          <meshBasicMaterial side={THREE.DoubleSide} />
+          <meshBasicMaterial side={THREE.DoubleSide} color="#FF69B4" />
         </mesh>
         <mesh geometry={nodes.Moon.geometry}
           material={materials['Material.002']}
@@ -87,6 +87,7 @@ export default function Model(props) {
 }
 
 useGLTF.preload('./model/halloween2.glb')
+
 ```
 ```
 #Experience.jsx
