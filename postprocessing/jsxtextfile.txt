@@ -1,14 +1,23 @@
 '#experience.jsx'
-'jsx'
-console.log('this is jsx')
-import { OrbitControls } from '@react-three/drei'
+'jsx'import { OrbitControls } from '@react-three/drei'
 import { Perf } from 'r3f-perf'
 import { SSR, EffectComposer, Scanline, Glitch, Vignette, Noise, Bloom, DepthOfField } from '@react-three/postprocessing'
 import { BlendFunction, GlitchMode } from 'postprocessing'
 import { useControls } from 'leva'
+import { Leva } from 'leva'
+import Drunk from './Drunk.jsx'
+import { useRef } from 'react'
 
 export default function Experience() {
 
+    const drunkRef = useRef()
+    const drunkProps= useControls('Drunk Effect',{
+        enabled: false,
+        frequency:{ value: 2, min:1, max: 20},
+        amplitude: {value: 0.1 , min:0, max:1 },
+        BlendFunction: { enabled: true, value: BlendFunction.DARKEN, options: BlendFunction }
+    })
+    
     const colors = useControls('colors',
         {
             colorsphere: '#d17f2c',
@@ -42,6 +51,7 @@ export default function Experience() {
             bokehscale: { value: 6.0, min: 0.0, max: 10, step: 1.0 }
 
         })
+
     const ssrProps = useControls('SSR Effect', {
         enabled: false,
         temporalResolve: true,
@@ -75,16 +85,18 @@ export default function Experience() {
     })
 
     return <>
-        <color args={['#000000']} attach="background" />
-        <EffectComposer>
-{/*             <Glitch
+
+        <color args={['#FFFFFF']} attach="background" />
+        <EffectComposer enabled={true}>
+            
+            {/*             <Glitch
                 delay={[0.5, 1]}
                 duration={[0.1, 0.3]}
                 strength={[0.2, 0.4]}
                 mode={GlitchMode.CONSTANT_MILD}
             /> */}
             {datas.enabled && <Scanline density={datas.density} />}
-             {depth.enabled && <DepthOfField
+            {depth.enabled && <DepthOfField
                 focusDistance={depth.focusdistance}
                 focalLength={depth.focallength}
                 bokehScale={depth.bokehscale}
@@ -93,6 +105,13 @@ export default function Experience() {
             {bloom.enabled && <Bloom mipmapBlur intensity={bloom.intensity} luminanceThreshold={0} />}
             {ssrProps.enabled && <SSR {...ssrProps} />}
             {dark.enabled && <Vignette {...dark} />}
+       
+            {drunkProps.enabled &&  <Drunk 
+            ref={drunkRef}
+            {...drunkProps}
+            blendFunction={drunkProps.BlendFunction}
+            />}
+
         </EffectComposer>
         <Perf position="top-left" />
         <OrbitControls makeDefault />
@@ -130,3 +149,56 @@ export default function Experience() {
 
     </>
 }
+
+#DrunkEffect
+import { Effect } from "postprocessing";
+import { Uniform } from "three";
+
+const fragmentShader = /* glsl */ `
+uniform float frequency;
+uniform float amplitude;
+uniform float offset;
+
+    void mainUv(inout vec2 uv)
+    {
+        uv.y +=sin(uv.x * frequency + offset) * amplitude;
+    }
+void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
+    {
+/*         vec4 color = inputColor;
+        color.rgb *= vec3(0.8,1.0,0.5); 
+        outputColor= color;*/
+        outputColor = vec4(0.8,1.0,0.5,inputColor.a);
+    }
+`
+
+export default class DrunkEffect extends Effect {
+
+    constructor({ frequency, amplitude, blendFunction }) {
+        super('DrunkEffect', fragmentShader, {
+            blendFunction: blendFunction,
+            uniforms: new Map([
+                ['frequency', new Uniform(frequency)],
+                ['amplitude', new Uniform(amplitude)],
+                ['offset', new Uniform(0)],
+            ])
+        })
+    }
+    update(renderer, inputBuffer, deltaTime)
+    {
+         //uniforms is a map
+        this.uniforms.get('offset').value += deltaTime
+    }
+}
+
+#Drunk
+
+import {forwardRef} from 'react'
+import DrunkEffect from "./DrunkEffect.jsx"
+
+
+export default forwardRef(function Drunk(props,ref) {
+
+    const effect = new DrunkEffect(props)
+    return <primitive object={effect} ref={ref} />
+})
