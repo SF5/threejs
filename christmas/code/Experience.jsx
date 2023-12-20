@@ -1,3 +1,5 @@
+jsx console.log('this is jsx') 
+
 import { OrbitControls } from '@react-three/drei'
 import { Perf } from 'r3f-perf'
 import { Suspense } from 'react'

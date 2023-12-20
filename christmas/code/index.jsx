@@ -1,3 +1,5 @@
+jsx console.log('this is jsx') 
+
 import './style.css'
 import ReactDOM from 'react-dom/client'
 import { Canvas } from '@react-three/fiber'
