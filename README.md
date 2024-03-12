@@ -14,3 +14,8 @@ postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
   Christmas tree
   https://sf5.github.io/threejs/christmas/
 </div>
+<div>
+WIP
+  Isometric room
+  https://sf5.github.io/threejs/isometric/
+</div>
