@@ -1,5 +1,4 @@
 //JAVASCRIPT
-
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui';
@@ -10,6 +9,8 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import * as YUKA from 'yuka'
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import waterVertexShader from './shaders/water/vertex.glsl'
+import waterFragmentShader from './shaders/water/fragment.glsl'
 
 /**
  * Base
@@ -44,9 +45,7 @@ const waterGeometry = new THREE.PlaneGeometry(40, 40, 512, 512)
 waterGeometry.deleteAttribute('normal')
 waterGeometry.deleteAttribute('uv')
 
-// shaderMaterial
-import waterVertexShader from './shaders/water/vertex.glsl'
-import waterFragmentShader from './shaders/water/fragment.glsl'
+
 
 
 //textures
@@ -120,6 +119,25 @@ const ambientLight = new THREE.AmbientLight('#edb533', 0.275)
 const directionalLight = new THREE.DirectionalLight('#73ab79', 5)
 scene.add(ambientLight, directionalLight)
 
+class ColorGUIHelper {
+    constructor(object, prop) {
+        this.object = object;
+        this.prop = prop;
+    }
+    get value() {
+        return `#${this.object[this.prop].getHexString()}`;
+    }
+    set value(hexString) {
+        this.object[this.prop].set(hexString);
+    }
+}
+gui.addColor(new ColorGUIHelper(ambientLight, 'color'), 'value').name('color');
+gui.add(ambientLight, 'intensity', 0, 2, 0.01).name('al_intensity');
+gui.addColor(new ColorGUIHelper(directionalLight, 'color'), 'value').name('color');
+gui.add(directionalLight, 'intensity', 0, 2, 0.01).name('dl_intensity');
+gui.add(directionalLight.target.position, 'x', -10, 10);
+gui.add(directionalLight.target.position, 'z', -10, 10);
+gui.add(directionalLight.target.position, 'y', 0, 10);
 // Hemisphere light
 /* const hemisphereLight = new THREE.HemisphereLight('#fffffd', '#81b9cb', 0.9)
 scene.add(hemisphereLight) 
@@ -181,11 +199,12 @@ window.addEventListener('resize', () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 57)
-camera.position.set(1, 1, 1)
+camera.position.set(2,3, 4)
 scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
+controls.maxDistance = 20;
 controls.enableDamping = true
 
 
@@ -210,11 +229,13 @@ rgbeLoader.load('/environmentMaps/blender.hdr', (environmentMap) =>
  */
 
 const gltfLoader = new GLTFLoader()
-
 /* const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('/draco/')
+dracoLoader.setDecoderConfig({ type: 'js' });
+dracoLoader.setDecoderPath('../draco/gltf/');
 gltfLoader.setDRACOLoader(dracoLoader)
+
  */
+
 
 
 /**
@@ -222,15 +243,15 @@ gltfLoader.setDRACOLoader(dracoLoader)
  */
 // Baked material
 
-const bakedTexture = textureLoader.load('./model/images/alg_diffuse.png')
+const bakedTexture = textureLoader.load('./model/images/alg_diffuse1.png')
 const bakedMaterial = new THREE.MeshToonMaterial({ map: bakedTexture })
 bakedTexture.flipY = false
 //bakedTexture.colorSpace = THREE.SRGBColorSpace
 
 gltfLoader.load(
-    './model/low1.glb',
+    './model/low3.glb',
     (gltf) => {
-        //    console.log(gltf)
+        console.log(gltf)
         gltf.scene.traverse((child) => {
             child.material = bakedMaterial
         })
@@ -238,74 +259,153 @@ gltfLoader.load(
 
         for (const child of children) {
             scene.add(child)
+
         }
     },
     function (progress) {
-        // console.log((progress.loaded / progress.total * 100) + '% loaded of rocks');
+        console.log((progress.loaded / progress.total * 100) + '% loaded of rocks');
     },
     (error) => {
         console.log(error)
     }
 )
-/* 
+
 gltfLoader.load(
-    './model/coral1.glb',
+    './model/plants/kelpplants.glb',
     (gltf) => {
         console.log('success')
-      //  console.log(gltf)
-
+        //  console.log(gltf)
+        gltf.scene.position.y = -0.3
         scene.add(gltf.scene)
     },
     (progress) => {
-        console.log('progress coral')
-      //  console.log(progress)
+        console.log('progress kelp')
+        //  console.log(progress)
     },
     (error) => {
         console.log('error')
         console.log(error)
     }
 )
- */
+
 
 
 
 //fish
-const entity = new YUKA.GameEntity()
+//const entity = new YUKA.GameEntity()
 
 const entityManager = new YUKA.EntityManager();
 
 function sync(entity, renderComponent) {
     renderComponent.matrix.copy(entity.worldMatrix);
 }
+
+
+const loader = new GLTFLoader();
+const mixers = [];
+
+loader.load('./model/fish/fish5.glb', function (glb) {
+    const model = glb.scene;
+    const clips = glb.animations;
+
+    for (let i = 0; i < 50; i++) {
+        const fishClone = SkeletonUtils.clone(model);
+
+        fishClone.rotation.y -= Math.PI * 0.5
+        fishClone.matrixAutoUpdate = false;
+        scene.add(fishClone);
+
+        const vehicle = new YUKA.Vehicle();
+        vehicle.setRenderComponent(fishClone, sync);
+
+        const wanderBehavior = new YUKA.WanderBehavior();
+        vehicle.steering.add(wanderBehavior);
+
+        entityManager.add(vehicle);
+
+        vehicle.position.z = 2.5 - Math.random() * 5;
+        vehicle.position.y = 0.5 + Math.random() * 3;
+        vehicle.rotation.fromEuler(0, 2 * Math.PI * Math.random(), 0)
+
+        const mixer = new THREE.AnimationMixer(fishClone);
+        const clip = THREE.AnimationClip.findByName(clips, 'fish_001_animate_preview');
+        const action = mixer.clipAction(clip);
+        action.loop = THREE.LoopRepeat;
+        action.play();
+        mixers.push(mixer)
+    }
+},
+    (progress) => {
+        console.log((progress.loaded / progress.total * 100) + '% loaded of fish');
+    },
+    (error) => {
+        console.log(error)
+    }
+);
+
+
+loader.load('./model/fish/paracanthurus.glb', function (gltf) {
+    const model = gltf.scene;
+    const clips = gltf.animations;
+
+    for (let i = 0; i < 50; i++) {
+        const two = SkeletonUtils.clone(model);
+
+        two.rotation.y -= Math.PI * 0.5
+        two.matrixAutoUpdate = false;
+        scene.add(two);
+
+        const vehicle2 = new YUKA.Vehicle();
+        vehicle2.setRenderComponent(two, sync);
+
+        const wanderBehavior = new YUKA.WanderBehavior();
+        vehicle2.steering.add(wanderBehavior);
+
+        entityManager.add(vehicle2);
+
+        vehicle2.position.z = 2.5 - Math.random() * 5;
+        vehicle2.position.y = 0.5 + Math.random() * 3;
+        vehicle2.rotation.fromEuler(0, 2 * Math.PI * Math.random(), 0)
+
+        const mixer = new THREE.AnimationMixer(two);
+        mixer.clipAction(gltf.animations[0])
+        //const clip = THREE.AnimationClip.findByName(clips, 'fish_001_animate_preview');
+       // const action = mixer.clipAction(clip);
+        //mixer = new THREE.AnimationMixer(gltf.scene)
+        const action = mixer.clipAction(gltf.animations[0])
+    
+        action.play();
+        mixers.push(mixer)
+    }
+},
+    (progress) => {
+        console.log((progress.loaded / progress.total * 100) + '% loaded of fish');
+    },
+    (error) => {
+        console.log(error)
+    }
+);
+
 /* 
-const fishTexture = textureLoader.load('./model/fish/clownfish.png')
-const fishMaterial = new THREE.MeshToonMaterial({ map: fishTexture })
-
-
-fishTexture.premultiplyAlpha = false;
-fishTexture.magFilter = THREE.NearestFilter;
-fishTexture.minFilter = THREE.NearestFilter;
-fishTexture.flipY = false; */
-
-//fishMaterial.colorSpace = THREE.LinearSRGBColorSpace
-
 const loader = new GLTFLoader();
 let mixer;
 
-loader.load('./model/fish/fish3.glb', function (glb) {
+loader.load('./model/fish/fish5.glb', function (glb) {
     const model = glb.scene;
     const clips = glb.animations;
-    //  const fishes = new THREE.AnimationObjectGroup();
     mixer = new THREE.AnimationMixer(model);
+    scene.add(model)
     const clip = THREE.AnimationClip.findByName(clips, 'fish_001_animate_preview');
     const action = mixer.clipAction(clip);
     action.loop = THREE.LoopRepeat;
     action.play();
+    
 
-    console.log(action)
+    console.log(clip)
 
     for (let i = 0; i < 50; i++) {
         const fishClone = SkeletonUtils.clone(model);
+        fishClone.rotation.y -=  Math.PI * 0.5
         fishClone.matrixAutoUpdate = false;
         scene.add(fishClone);
         //fishes.add(fishClone);
@@ -321,7 +421,7 @@ loader.load('./model/fish/fish3.glb', function (glb) {
         vehicle.position.x = 2.5 - Math.random() * 5;
         vehicle.position.z = 2.5 - Math.random() * 5;
         vehicle.position.y = 0.5 +  Math.random() * 3 ;
-        vehicle.rotation.fromEuler(0, 2 * Math.PI * Math.random(), 0)
+       // vehicle.rotation.fromEuler(0, 0.5 * Math.PI * Math.random(), 0)
 
     }
     //scene.add(gltf.scene)
@@ -334,7 +434,7 @@ loader.load('./model/fish/fish3.glb', function (glb) {
     }
 );
 
-
+ */
 
 /**
  * Renderer
@@ -367,23 +467,25 @@ scene.fog = new THREE.FogExp2(color, density)
  * Animate
  */
 const clock = new THREE.Clock()
-
 const time = new YUKA.Time();
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
-    const clockDelta = clock.getDelta();
-    if (mixer) {
-        mixer.update(clockDelta);
-    }
+
     // Water
     waterMaterial.uniforms.uTime.value = elapsedTime
 
     // yuka animation
     const delta = time.update().getDelta();
+    for (const mixer of mixers)
+        mixer.update(delta)
+
+    /*   if (mixer) {
+          mixer.update(delta);
+      } */
+
     entityManager.update(delta);
-
-
+    
     // Update controls
     controls.update()
 
