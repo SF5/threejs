@@ -19,3 +19,9 @@ WIP
   Isometric room
   https://sf5.github.io/threejs/isometric/
 </div>
+
+<div>
+  SeaChallenge
+  https://sf5.github.io/threejs/seachallenge
+  It takes a few seconds for the rocks to load in the scene
+</div>
