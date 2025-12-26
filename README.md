@@ -36,7 +36,7 @@ postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
 </div>
 
 <div>
-   christmaswishes 2025<br>
+   <h2>christmaswishes 2025</h2>
   <img src="./images/ChristmasWishes.jpg" alt"Chritmas wishes"><br>
   https://sf5.github.io/threejs/christmaswishes/
 </div>
