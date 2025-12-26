@@ -26,3 +26,8 @@ WIP
   It takes a few seconds for the rocks to load in the scene
   uses Yuka for the wandering fishes https://mugen87.github.io/yuka/
 </div>
+
+<div>
+  christmaswishes 2025
+  https://sf5.github.io/threejs/christmaswishes/
+</div>
