@@ -6,19 +6,18 @@ earlier page with study of lights
 https://sf5.github.io/threejs/lights/
 <br>
 postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
-<Div>
+<div>
   halloween scene 2023
-  <img src="./images/halloween.jpg" alt="halloween challenge">
-  
+  <img src="./images/halloween.jpg" alt="halloween challenge"> 
   https://sf5.github.io/threejs/halloween/
-  
-</Div>
+</div>
 <div>
   Christmas tree
+  <img src="./images/ChristmasTree.jpg" alt="christmas challenge">
   https://sf5.github.io/threejs/christmas/
 </div>
 <div>
-WIP
+  <img src="./images/Isometric_Game.jpg" alt="Isometric room challenge">
   Isometric room
   https://sf5.github.io/threejs/isometric/
 </div>
