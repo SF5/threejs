@@ -5,10 +5,10 @@
 <br>
 https://sf5.github.io/threejs/
 <br>
-earlier page with study of lights
+<p></p>earlier page with study of lights</p>
 https://sf5.github.io/threejs/lights/
 <br>
-postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
+<p>postprocessing effects with leva:</p> https://sf5.github.io/threejs/postprocessing/
 <div>
  <h2>halloween scene 2023</h2> 
   <p>
