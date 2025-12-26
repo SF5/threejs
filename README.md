@@ -1,6 +1,6 @@
 # threejs
 <h2>Portal scene</h2>
-<p>from the lesson by Bruno Simon in the three.js course https://threejs-journey.com/</p>  <br>
+<p>from the lesson by Bruno Simon in the three.js course https://threejs-journey.com/</p>
 <img src="./images/Portal.jpg" alt="Portal Room"> 
 <br>
 https://sf5.github.io/threejs/
@@ -10,10 +10,10 @@ https://sf5.github.io/threejs/lights/
 <br>
 postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
 <div>
-  halloween scene 2023
-  <br>
+ <h2>halloween scene 2023</h2> 
+  <p>
   <img src="./images/halloween.jpg" alt="halloween challenge"> 
-  <br>
+</p>
   https://sf5.github.io/threejs/halloween/
 </div>
 <div>
