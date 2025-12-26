@@ -8,7 +8,10 @@ https://sf5.github.io/threejs/lights/
 postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
 <Div>
   halloween scene 2023
+  <img src="./images/halloween.jpg" alt="halloween challenge">
+  
   https://sf5.github.io/threejs/halloween/
+  
 </Div>
 <div>
   Christmas tree
