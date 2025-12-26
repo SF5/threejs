@@ -22,16 +22,16 @@ postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
   https://sf5.github.io/threejs/christmas/
 </div>
 <div>
-  Isometric room<br>
+ <h2>Isometric room</h2>
   <img src="./images/Isometric Game.jpg" alt="Isometric room challenge"><br>
   https://sf5.github.io/threejs/isometric/
 </div>
 
 <div>
-  SeaChallenge<br>
+ <h2> SeaChallenge</h2>
   <img src="./images/SeaChallenge.jpg" alt="Sea challenge"><br>
   https://sf5.github.io/threejs/seachallenge
-  It takes a few seconds for the rocks to load in the scene
+  <p>It takes a few seconds for the rocks to load in the scene</p>
   uses Yuka for the wandering fishes https://mugen87.github.io/yuka/
 </div>
 
