@@ -2,8 +2,9 @@
 <h2>Portal scene</h2>
 <p>from the lesson by Bruno Simon in the three.js course https://threejs-journey.com/</p>
 <img src="./images/Portal.jpg" alt="Portal Room"> 
-<br>
 https://sf5.github.io/threejs/
+<br
+ 
 <br>
 <p></p>earlier page with study of lights</p>
 https://sf5.github.io/threejs/lights/
