@@ -1,6 +1,6 @@
 # threejs
 Portal scene from the lesson by Bruno Simon in the three.js course https://threejs-journey.com/ <br>
-<img src="./images/Porta" alt="Portal Room"> 
+<img src="./images/Portal.jpg" alt="Portal Room"> 
 <br>
 https://sf5.github.io/threejs/
 <br>
