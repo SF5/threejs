@@ -1,5 +1,6 @@
 # threejs
-Portal scene from the lesson by Bruno Simon in the three.js course https://threejs-journey.com/ <br>
+<h2>Portal scene</h2>
+<p>from the lesson by Bruno Simon in the three.js course https://threejs-journey.com/</p>  <br>
 <img src="./images/Portal.jpg" alt="Portal Room"> 
 <br>
 https://sf5.github.io/threejs/
