@@ -17,7 +17,7 @@ postprocessing effects with leva: https://sf5.github.io/threejs/postprocessing/
   https://sf5.github.io/threejs/halloween/
 </div>
 <div>
-  Christmas tree<br>
+  <h2>Christmas tree</h2>
   <img src="./images/ChristmasTree.jpg" alt="christmas challenge"><br>
   https://sf5.github.io/threejs/christmas/
 </div>
