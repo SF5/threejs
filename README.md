@@ -42,3 +42,9 @@ https://sf5.github.io/threejs/lights/
   <img src="./images/ChristmasWishes.jpg" alt"Chritmas wishes"><br>
   https://sf5.github.io/threejs/christmaswishes/
 </div>
+<div>
+changing a monkeyhead with sliders
+Suzanne is made in blender with shape keys. importing it as gltf and using morphtargets in three.js
+https://sf5.github.io/threejs/shapes/
+
+</div>
